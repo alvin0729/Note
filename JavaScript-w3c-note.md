@@ -46,7 +46,6 @@ with的弊端:导致数据泄、性能下降</li>
                 <span class="token keyword">else</span> <span class="token punctuation">{</span><span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">}</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
-
         <span class="token keyword">function</span> <span class="token function">validate_form</span><span class="token punctuation">(</span>thisform<span class="token punctuation">)</span>
         <span class="token punctuation">{</span>
             <span class="token keyword">with</span> <span class="token punctuation">(</span>thisform<span class="token punctuation">)</span>
@@ -57,14 +56,12 @@ with的弊端:导致数据泄、性能下降</li>
         <span class="token punctuation">}</span>
     <span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">&gt;</span>
 <span class="token operator">&lt;</span><span class="token operator">/</span>head<span class="token operator">&gt;</span>
-
 <span class="token operator">&lt;</span>body<span class="token operator">&gt;</span>
 <span class="token operator">&lt;</span>form action<span class="token operator">=</span><span class="token string">"submitpage.htm"</span>onsubmit<span class="token operator">=</span><span class="token string">"return validate_form(this);"</span> method<span class="token operator">=</span><span class="token string">"post"</span><span class="token operator">&gt;</span>
     Email<span class="token punctuation">:</span> <span class="token operator">&lt;</span>input type<span class="token operator">=</span><span class="token string">"text"</span> name<span class="token operator">=</span><span class="token string">"email"</span> size<span class="token operator">=</span><span class="token string">"30"</span><span class="token operator">&gt;</span>
     <span class="token operator">&lt;</span>input type<span class="token operator">=</span><span class="token string">"submit"</span> value<span class="token operator">=</span><span class="token string">"Submit"</span><span class="token operator">&gt;</span>
 <span class="token operator">&lt;</span><span class="token operator">/</span>form<span class="token operator">&gt;</span>
 <span class="token operator">&lt;</span><span class="token operator">/</span>body<span class="token operator">&gt;</span>
-
 <span class="token operator">&lt;</span><span class="token operator">/</span>html<span class="token operator">&gt;</span>
 </code></pre>
 
