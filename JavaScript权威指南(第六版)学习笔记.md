@@ -34,4 +34,5 @@ var a = [], i = 0;
 for(a[i++] in o);  
 for(i in a) console.log(i);
 </code></pre>
+<h1 id="对象">对象</h1>
 
