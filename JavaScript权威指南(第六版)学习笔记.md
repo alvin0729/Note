@@ -35,4 +35,16 @@ for(a[i++] in o);
 for(i in a) console.log(i);
 </code></pre>
 <h1 id="对象">对象</h1>
+<h3 id="创建对象">创建对象</h3>
+<ul>
+<li><strong>对象直接量</strong><br>
+<code>var point = {x:0, y:0};</code></li>
+<li><strong>通过new创建对象</strong><br>
+<code>var o = new Object();</code></li>
+<li><strong>通过new创建对象</strong></li>
+</ul>
+<pre><code>var o1 = Object.create(point);  
+var o2 = Object.create(null);  
+var o3 = Object.create(Object.prototype);  //{}
+</code></pre>
 
