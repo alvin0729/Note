@@ -58,7 +58,7 @@ var o3 = Object.create(Object.prototype);  //{}
 //这里使用ECMAScript 5中的Object.create()函数（如果存在的话）  
 //如果不存在Object.create()，则退化使用其他方法  
 function inherit(p) {  
-    if (p == null) throw TypeError();  //p是一个对象，但不能是null  
+  if (p == null) throw TypeError();  //p是一个对象，但不能是null  
   if (Object.create)          //如果Object.create()存在  
   return Object.create(p);    //直接使用它  
   var t = typeof p;           //否则进行进一步检测  
@@ -86,11 +86,147 @@ functionf(){}       //声明一个全局函数
 delete this.f;      //也不能删除全局函数
 </code></pre>
 <ul>
-<li><strong>检测属性</strong><br>
+<li>
+<p><strong>检测属性</strong><br>
 可以通过in运算符、hasOwnPreperty()和<br>
 propertyIsEnumerable()方法来完成这个工作，甚至仅通过属性查询也可以做到这一点。<br>
 <code>var o = {x:1}; var hasX = "x" in o;</code><br>
-除了使用in运算符之外，另一种更简便的方法是使用"!=="判断一个属性是否是undefined。</li>
-<li><strong>枚举属性</strong></li>
+除了使用in运算符之外，另一种更简便的方法是使用"!=="判断一个属性是否是undefined。</p>
+</li>
+<li>
+<p><strong>枚举属性</strong><br>
+除了for/in循环之外，ECMAScript5定义了两个用以枚举属性名称的函数。第一个是0bject.keys()，它返回一个数组，这个数组由对象中可枚举的自有属性的名称组成。第二个枚举属性的函数是0bject.get0wnPropertyNames(),它和0jbect.keys()类似，只是它返回对象的所有自有属性的名称，而不仅仅是可枚举的属性。</p>
+</li>
 </ul>
+<pre><code>/*
+ * Add a nonenumerable extend() method to Object.prototype.
+ * This method extends the object on which it is called by copying properties
+ * from the object passed as its argument.  All property attributes are
+ * copied, not just the property value.  All own properties (even non-
+ * enumerable ones) of the argument object are copied unless a property
+ * with the same name already exists in the target object.
+ */
+Object.defineProperty(Object.prototype,
+    "extend",                  // Define Object.prototype.extend
+    {
+        writable: true,
+        enumerable: false,     // Make it nonenumerable
+        configurable: true,
+        value: function(o) {   // Its value is this function
+            // Get all own props, even nonenumerable ones
+            var names = Object.getOwnPropertyNames(o);
+            // Loop through them
+            for(var i = 0; i &lt; names.length; i++) {
+                // Skip props already in this object
+                if (names[i] in this) continue;
+                // Get property description from o
+                var desc = Object.getOwnPropertyDescriptor(o,names[i]);
+                // Use it to create property on this
+                Object.defineProperty(this, names[i], desc);
+            }
+        }
+    });
+</code></pre>
+<ul>
+<li><strong>属性getter和setter</strong></li>
+</ul>
+<pre><code>var p = {  
+    //x和y是普通的可读写的数据属性  
+  x:1.0,  
+    y:1.0,  
+  
+    //r是可读写的存取器属性，它有getter和setter.  
+ //函数体结束后不要忘记带上逗号  get r() {return Math.sqrt(this.x*this.x + this.y*this.y);},  
+    set r(newvalue) {  
+        var oldvalue = Math.sqrt(this.x*this.x + this.y*this.y);  
+        var ratio = newvalue/oldvalue;  
+        this.x *= ratio;  
+        this.y *=ratio;  
+    },  
+    //theta是只读存取器属性，它只有getter方法  
+  get theta() {return Math.atan2(this.y, this.x);},  
+}
+</code></pre>
+<pre><code>var serialnum = {  
+    //这个数据属性包含下一个序列号  
+ //$符号暗示这个属性是一个私有属性  $n: 0,  
+  
+    //返回当前值，然后自增  
+  get next() {return this.$n++; },  
+  
+    //给n设置新的值，但只有当它比当前值大时才设置成功  
+  set next(n) {  
+        if (n &gt;= this.$n) this.$n = n;  
+        else  throw "序列号的值不能比当前值小";  
+    }  
+};
+</code></pre>
+<ul>
+<li><strong>属性的特性</strong><br>
+通过调用0bject.getOwnpropertyDecriptor()可以获得某个对象特定属性的属性描述符：</li>
+</ul>
+<pre><code>var random = {  
+    get octet() {return Math.floor((Math.random() * 256));}  
+};  
+  
+//返回{value:1，writable:true，enumerable:true,configurable:true}  
+Object.getOwnPropertyDescriptor({x:1},"x");  
+  
+//查询上文中定义的randam对象的octet属性  
+//返回{get：/*func*/,set:undefined,enumerable:true,configurable：true}  
+Object.getOwnPropertyDescriptor(random,"octet");  
+//对于继承属性和不存在的属性，返回undefined  
+Object.getOwnPropertyDescriptor({},"x");         //undefined   没有这个属性  
+Object.getOwnPropertyDescriptor({},"toString");  //undefined   继承属性
+</code></pre>
+<pre><code>var o ={};//创建一个空对象  
+//添加一个不可枚举的数据属性x，并赋值为1  
+  
+Object.defineProperty(o, "x", {  
+    value : 1,  
+    writable: true,  
+    enumerable: false,  
+    configurable: true  
+});  
+  
+//属性是存在的，但不可枚举  
+o.x;             //=&gt; 1  
+Object.keys(o);  //=&gt; []  
+  
+//现在对属性×做修改，让它变为只读  
+Object.defineProperty(o, "x", {writable: false});  
+  
+//试图更改这个属性的值  
+o.x=2;           //操作失败但不报错，而在严格模式中抛出类型错误异常  
+o.x;             //=&gt; 1  
+  
+//属性依然是可配置的，因此可以通过这种方式对它进行修改：  
+Object.defineProperty(o, "x", {value:2});  
+o.x;             //=&gt; 2  
+  
+//现在将x从数据属性修改为存取器属性  
+Object.defineProperty(o, "x", {get: function () {  
+    return 0;  
+}});  
+o.x;             //=&gt; 0
+</code></pre>
+<pre><code>var p = Object.defineProperties({},{  
+    x:{value:1,writable:true,enumerable:true,configuable:true},  
+    r:{  
+        get: function () {  
+            return 0;  
+        },  
+        enumerable:true,  
+        configurable:true  
+  }  
+});
+</code></pre>
+<blockquote>
+<p>如果对象是不可扩展的，则可以编辑已有的自有属性，但不能给它添加新属性。<br>
+如果属性是不可配置的，则不能修改它的可配置性和可枚举性。<br>
+如果存取器属性是不可配置的，则不能修改其getter和setter方法，也不能将它转换为数据属性。<br>
+如果数据属性是不可配置的，则不能将它转换为存取器属性。<br>
+如果数据属性是不可配置的，则不能将它的可写性从false修改为true，但可以从true修改为false。<br>
+如果数据属性是不可配置且不可写的，则不能修改它的值。然而可配置但不可写属性的值是可以修改的（实际上是先将它标记为可写的，然后修改它的值，最后转换为不可写的）。</p>
+</blockquote>
 
