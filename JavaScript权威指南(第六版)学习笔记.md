@@ -243,4 +243,48 @@ for(var k in Object){
     console.log(k);  
 }
 </code></pre>
+<h3 id="对象的三个属性">对象的三个属性</h3>
+<ul>
+<li><strong>prototype</strong><br>
+通过对象直接量或0bject.create()创建的对象包含一个名为constructor的属性，这个属性指代0bject()构造函数。因此，constructor.prototype才是对象直接量的真正的原型，但对于通过0bject·create()创建的对象则往往不是这样。</li>
+</ul>
+<pre><code>var p = {x:1};  
+console.log(Object.getPrototypeOf(p));  
+var o = Object.create(p);  
+console.log(p.isPrototypeOf(o));;  
+console.log(Object.prototype.isPrototypeOf(o));
+</code></pre>
+<ul>
+<li><strong>类属性</strong><br>
+classof函数可以返回传递给它的任意对象的类：</li>
+</ul>
+<pre><code>function classof(o) {
+    if (o === null) return "Null";
+    if (o === undefined) return "Undefined";
+    return Object.prototype.toString.call(o).slice(8,-1);
+}
+</code></pre>
+<ul>
+<li><strong>可扩展性</strong><br>
+ECMAScript5定义了用来查询和设置对象可扩展性的函数。通过将对象传人0bject.esExtenble()，来判断该对象是否是可扩展的。如果想将对象转换为不可扩展的，需要调用0bject.preventExtensions(),将待转换的对象作为参数传进去。注意，一旦将对象转换为不可扩展的，就无法再将其转换回可扩展的了。同样需要注意的是，<br>
+preventExtensions()只影响到对象本身的可扩展性。如果给一个不可扩展的对象的原型添加属性，这个不可扩展的对象同样会继承这些新属性。</li>
+</ul>
+<pre><code>//创建一个封闭对象，包括一个冻结的原型和一个不可枚举的属性  
+var o=Object.seal(Object.create(Object.freeze({x:1}), {y:{value:2,writable:true}}));
+</code></pre>
+<ul>
+<li><strong>序列化对象</strong></li>
+</ul>
+<pre><code>o ={x:1,y:{z:[false,null,""]}};    //定义一个测试对象  
+s = JSON.stringify(o);             //{ x: 1, y: { z: [ false, null, '' ] } }  
+p = JSON.parse(s);                 //p是o的深拷贝
+</code></pre>
+<ul>
+<li><strong>对象方法</strong><br>
+toString()<br>
+toLocaleString()<br>
+toJSON()<br>
+valueOf()</li>
+</ul>
+<h1 id="数组">数组</h1>
 
