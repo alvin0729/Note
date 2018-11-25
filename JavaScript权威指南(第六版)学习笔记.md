@@ -97,38 +97,9 @@ propertyIsEnumerable()方法来完成这个工作，甚至仅通过属性查询�
 <p><strong>枚举属性</strong><br>
 除了for/in循环之外，ECMAScript5定义了两个用以枚举属性名称的函数。第一个是0bject.keys()，它返回一个数组，这个数组由对象中可枚举的自有属性的名称组成。第二个枚举属性的函数是0bject.get0wnPropertyNames(),它和0jbect.keys()类似，只是它返回对象的所有自有属性的名称，而不仅仅是可枚举的属性。</p>
 </li>
-</ul>
-<pre><code>/*
- * Add a nonenumerable extend() method to Object.prototype.
- * This method extends the object on which it is called by copying properties
- * from the object passed as its argument.  All property attributes are
- * copied, not just the property value.  All own properties (even non-
- * enumerable ones) of the argument object are copied unless a property
- * with the same name already exists in the target object.
- */
-Object.defineProperty(Object.prototype,
-    "extend",                  // Define Object.prototype.extend
-    {
-        writable: true,
-        enumerable: false,     // Make it nonenumerable
-        configurable: true,
-        value: function(o) {   // Its value is this function
-            // Get all own props, even nonenumerable ones
-            var names = Object.getOwnPropertyNames(o);
-            // Loop through them
-            for(var i = 0; i &lt; names.length; i++) {
-                // Skip props already in this object
-                if (names[i] in this) continue;
-                // Get property description from o
-                var desc = Object.getOwnPropertyDescriptor(o,names[i]);
-                // Use it to create property on this
-                Object.defineProperty(this, names[i], desc);
-            }
-        }
-    });
-</code></pre>
-<ul>
-<li><strong>属性getter和setter</strong></li>
+<li>
+<p><strong>属性getter和setter</strong></p>
+</li>
 </ul>
 <pre><code>var p = {  
     //x和y是普通的可读写的数据属性  
@@ -229,4 +200,31 @@ o.x;             //=&gt; 0
 如果数据属性是不可配置的，则不能将它的可写性从false修改为true，但可以从true修改为false。<br>
 如果数据属性是不可配置且不可写的，则不能修改它的值。然而可配置但不可写属性的值是可以修改的（实际上是先将它标记为可写的，然后修改它的值，最后转换为不可写的）。</p>
 </blockquote>
+<p>复制属性的特性</p>
+<pre><code>/*  
+*给Object.prototype添加一个不可枚举的extend()方法
+*这个方法继承自调用它的对象，将作为参数传人的对象的属性一一复制 
+*除了值之外，也复制属性的所有特性，除非在目标对象中存在同名的属性， 
+*参数对象的所有自有对象（包括不可枚举的属性）也会一一复制。 
+*/
+Object.defineProperty(Object.prototype,  
+    "extend",                  // 定义 Object.prototype.extend  
+  {  
+        writable: true,  
+        enumerable: false,     // 将其定义为不可枚举的  
+  configurable: true,  
+        value: function(o) {   // 值就是这个函数  
+ // 得到所有的自有属性，包括不可枚举属性  var names = Object.getOwnPropertyNames(o);  
+            // 遍历它们  
+  for(var i = 0; i &lt; names.length; i++) {  
+                // 如果属性已经存在，则跳过  
+  if (names[i] in this) continue;  
+                // 获得o中的属性的描述符  
+  var desc = Object.getOwnPropertyDescriptor(o,names[i]);  
+                // 用它给this创建一个属性  
+  Object.defineProperty(this, names[i], desc);  
+            }  
+        }  
+    });
+</code></pre>
 
