@@ -63,7 +63,7 @@ function inherit(p) {
   return Object.create(p);    //直接使用它  
   var t = typeof p;           //否则进行进一步检测  
   if (t !== "object" &amp;&amp; t !== "function") throw TypeError();  
-    function f() {};          //定义一个空构造函数  
+  function f() {};            //定义一个空构造函数  
   f.prototype = p;            //将其原型属性设置为p  
   return new f();             //使用f()创建p的继承对象  
 }
@@ -103,11 +103,11 @@ propertyIsEnumerable()方法来完成这个工作，甚至仅通过属性查询�
 </ul>
 <pre><code>var p = {  
     //x和y是普通的可读写的数据属性  
-  x:1.0,  
+    x:1.0,  
     y:1.0,  
   
     //r是可读写的存取器属性，它有getter和setter.  
- //函数体结束后不要忘记带上逗号  get r() {return Math.sqrt(this.x*this.x + this.y*this.y);},  
+    //函数体结束后不要忘记带上逗号  get r() {return Math.sqrt(this.x*this.x + this.y*this.y);},  
     set r(newvalue) {  
         var oldvalue = Math.sqrt(this.x*this.x + this.y*this.y);  
         var ratio = newvalue/oldvalue;  
@@ -115,18 +115,18 @@ propertyIsEnumerable()方法来完成这个工作，甚至仅通过属性查询�
         this.y *=ratio;  
     },  
     //theta是只读存取器属性，它只有getter方法  
-  get theta() {return Math.atan2(this.y, this.x);},  
+    get theta() {return Math.atan2(this.y, this.x);},  
 }
 </code></pre>
 <pre><code>var serialnum = {  
     //这个数据属性包含下一个序列号  
- //$符号暗示这个属性是一个私有属性  $n: 0,  
+    //$符号暗示这个属性是一个私有属性  $n: 0,  
   
     //返回当前值，然后自增  
-  get next() {return this.$n++; },  
+    get next() {return this.$n++; },  
   
     //给n设置新的值，但只有当它比当前值大时才设置成功  
-  set next(n) {  
+    set next(n) {  
         if (n &gt;= this.$n) this.$n = n;  
         else  throw "序列号的值不能比当前值小";  
     }  
@@ -189,7 +189,7 @@ o.x;             //=&gt; 0
         },  
         enumerable:true,  
         configurable:true  
-  }  
+    }  
 });
 </code></pre>
 <blockquote>
@@ -212,20 +212,35 @@ Object.defineProperty(Object.prototype,
   {  
         writable: true,  
         enumerable: false,     // 将其定义为不可枚举的  
-  configurable: true,  
+        configurable: true,  
         value: function(o) {   // 值就是这个函数  					
         // 得到所有的自有属性，包括不可枚举属性  
-		var names = Object.getOwnPropertyNames(o);  
-		// 遍历它们  
-		for(var i = 0; i &lt; names.length; i++) {  
-		    // 如果属性已经存在，则跳过  
-		  if (names[i] in this) continue;  
-		    // 获得o中的属性的描述符  
-		  var desc = Object.getOwnPropertyDescriptor(o,names[i]);  
-		    // 用它给this创建一个属性  
-		  Object.defineProperty(this, names[i], desc);  
-		}  
+		    var names = Object.getOwnPropertyNames(o);  
+			// 遍历它们  
+		    for(var i = 0; i &lt; names.length; i++) {  
+			    // 如果属性已经存在，则跳过  
+			    if (names[i] in this) continue;  
+			    // 获得o中的属性的描述符  
+				var desc = Object.getOwnPropertyDescriptor(o,names[i]);  
+			    // 用它给this创建一个属性  
+				  Object.defineProperty(this, names[i], desc);  
+			}  
         }  
     });
+</code></pre>
+<pre><code>var o = {x:1,y:1};  
+  
+Object.defineProperty(o, "x", {  
+    value : 2,  
+    writable: true,  
+    enumerable: false,  
+    configurable: true  
+});  
+  
+Object.extend(o);  
+console.log(Object.x);  
+for(var k in Object){  
+    console.log(k);  
+}
 </code></pre>
 
