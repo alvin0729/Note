@@ -47,4 +47,10 @@ for(i in a) console.log(i);
 var o2 = Object.create(null);  
 var o3 = Object.create(Object.prototype);  //{}
 </code></pre>
+<h3 id="属性的查询与设置">属性的查询与设置</h3>
+<p><code>var len = book &amp;&amp; book.subtitle &amp;&amp; book.subtitle.length</code></p>
+<ul>
+<li><strong>继承</strong><br>
+<img src="http://resouce.dongdongwedding.com/9ADB17F31302F9253DD1D210FBE40E26.png" alt="enter image description here"></li>
+</ul>
 
