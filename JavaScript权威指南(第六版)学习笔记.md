@@ -287,4 +287,326 @@ toJSON()<br>
 valueOf()</li>
 </ul>
 <h1 id="数组">数组</h1>
+<pre><code>var base = 1024;  
+var table = [base, base+1, base+2,base+3];
+
+var count = [1,,3];  //数组看3个元素，中间的那个元素值为undefined  
+var undefs = [,,];   //数组有2个元素，都是undefined
+
+a[-1.23] = true;  //这将创建一个名为"-1.23"的属性  
+a["1000"] = 0;    //这是数组的第1001个元素  
+a[1.000] = 2;     //和a[1]相等
+</code></pre>
+<ul>
+<li><strong>稀疏数组</strong></li>
+</ul>
+<pre><code>a = [1,2,3,4,5];   //从5个元素的数组开始  
+a.length = 3;      //现在a为[1，2，3]  
+a.length = 0;      //删除所有的元素。a为[]  
+a.length = 5;      //长度为5，但是没有元素，就像neArray(5)
+
+Object.defineProperty(a,"length",{writable:false});  //让length属性只读
+</code></pre>
+<ul>
+<li><strong>数组元素的添加与删除</strong></li>
+</ul>
+<pre><code>a = [];  
+a[0] = "zero";  
+a.push("one");  
+a.push("two","three");
+
+a = [1,2,3];  
+delete a[1];   //a在索引1的位置不再有元素  
+1 in a;         //=〉false:数组索引1并未在数组中定义  
+a.length;       //3：delete操作并不影响数组长度
+</code></pre>
+<pre><code>var o = {x:1,y:2};  
+var keys = Object.keys(o);          //获得o对象属性名组成的数组  
+var values = [];                    //在数组中存储匹配属性的值  
+for(var i = 0; i&lt; keys.length; i++){//对于数组中每个索引  
+  var key = keys[i];              //获得索引处的键值  
+  values[i] = o[key];              //在values数组中保存属性值  
+}
+</code></pre>
+<pre><code>for(var i = 0; i&lt; a.length; i++){  
+    if(!a[i]) continue;             //跳过null、undefined和不存在的元素  
+  if(a[i] === undefined) continue;//跳过undefined和不存在的元素  
+  if(!(i in a)) continue;         //跳过不存在的元素  
+}  
+  
+//不存在的索引将不会遍历到  
+for(var index in a){  
+    if(!a.hasOwnProperty(i)) continue; //跳过继承的属性  
+ //跳过不是非负整数的i  if(String(Math.floor(Math.abs(Number(index)))) !== index) continue;  
+    var value = a[index];  
+}  
+var data = [1,2,3,4,5];  
+var sumOfSquares = 0;  
+//按照索引的顺序按个传递
+data.forEach(function (x) {  
+    sumOfSquares += x*x;  
+})
+</code></pre>
+<ul>
+<li><strong>数组方法</strong></li>
+</ul>
+<pre><code>var a = [1,2,3];  
+console.log(a.join(" "));  
+var b = new Array(10);  
+console.log(b.join("-"));  
+  
+console.log(a.reverse().join()); //3,2,1  
+console.log(a);                  //[ 3, 2, 1 ]  
+  
+console.log(a.sort());  
+console.log(a.sort(function (a, b) {  
+    return a - b; //负数升序  
+}));  
+  
+console.log(a.concat(4, 5));  
+  
+//参数一1指定了最后一个元素，而一3指定了倒数第三个元素。  
+console.log(a.slice(1, -1));
+</code></pre>
+<p>splice()<br>
+Array·splice()方法是在数组中插人或删除元素的通用方法。</p>
+<pre><code>var a = [1,2,3,4,5,6,7,8];  
+console.log(a.splice(4));   //[ 5, 6, 7, 8 ]  
+console.log(a); //[ 1, 2, 3, 4 ]  
+console.log(a.splice(1, 2));//[ 2, 3 ]  
+console.log(a); //[ 1, 4 ]  
+console.log(a.splice(1, 1));//[ 4 ]  
+console.log(a); //[ 1 ]
+</code></pre>
+<pre><code>var a = [1,2,3,4];  
+console.log(a.splice(2, 0, 'a', 'b')); //[]  
+console.log(a); //[ 1, 2, 'a', 'b', 3, 4 ]  
+console.log(a.splice(2, 2, [1, 2], 3)); //[ 'a', 'b' ]  
+console.log(a); //[ 1, 2, [ 1, 2 ], 3, 3, 4 ]
+</code></pre>
+<p>unshift()和shift()方法的行为非常类似于push()和pop()，不一样的是前者是在数组的头部而非尾部进行元素的插人和删除操作。</p>
+<pre><code>var data = [1,2,3,4,5];  
+data.forEach(function (v,i,a) {  
+    a[i] = v + 1;  
+});  
+console.log(data); //[ 2, 3, 4, 5, 6 ]  
+/*注意，forEach()无法在所有元素都传递给调用的函数之前终止遍历。也就是说，没有  
+像for循环中使用的相应的break语句。如果要提前终止，必须把forEach()方法放在一个  
+try块中，并能抛出一个异常。如果forEach()调用的函数抛出foreach.break异常，循环  
+会提前终止：  
+ function  foreach(a,f,t) { try{a.forEach(f,t);} catch(e) { if (e === foreach.break) return; else throw e; } } foreach.break = new Error("StopIteration");
+ */
+</code></pre>
+<pre><code>//稀疏数组  
+var array = new Array(3);  
+array[2] = "name";  
+  
+for(var a in array)  
+{  
+    console.log("index=" + a + ",value=" + array[a]);  
+}  
+  
+// 密集数组  
+var dense = Array.apply(null, Array(3));  
+dense[2] = "name";  
+for(var a in dense)  
+{  
+    console.log("index=" + a + ",value=" + dense[a]);  
+}
+</code></pre>
+<pre><code>var a = [1,2,3];  
+b = a.map(function (x) {  
+    return x*x;  
+});  
+  
+smallValues = a.filter(function (x,i) {  
+    return i%2==0;  
+})  
+  
+saprse = new Array();  
+saprse[2] = 4;  
+saprse[10] = 2;  
+//返回密集数组  
+var dense = saprse.filter(function () {  
+    return true;  
+});  
+//压缩空缺并删除undefined和null元素  
+a.filter(function (x) {  
+    return x !== undefined &amp;&amp; x != null;  
+});
+</code></pre>
+<p>注意，一旦every()和some()确认该返回什么值它们就会停止遍历数组元素。some()在判定函数第一次返回true后就返回true，但如果判定函数一直返回false，它将会遍历整个数组。every()恰好相反：它在判定函数第一次返回false后就返回false，但如果判定函数一直返回true，它将会遍历整个数组。注意，根据数学上的惯例，在空数组上调用时，every()返回true,some()返回false。</p>
+<pre><code>reduce() reduceRight()  
+  
+var a = [1,2,3,4,5];  
+var sum = a.reduce(function (x,y) {  
+    return x+y  
+}, 0);  
+var product = a.reduce(function (x,y) {  
+    return x*y  
+},1);  
+var max = a.reduce(function (x,y) {  
+    return (x&gt;y)?x:y;  
+});
+</code></pre>
+<pre><code>/*
+ * Copy the enumerable properties of p to o, and return o.
+ * If o and p have a property by the same name, o's property is overwritten.
+ * This function does not handle getters and setters or copy attributes.
+ */
+function extend(o, p) {
+    for(prop in p) {                         // For all props in p.
+        o[prop] = p[prop];                   // Add the property to o.
+    }
+    return o;
+}
+
+/*
+ * Copy the enumerable properties of p to o, and return o.
+ * If o and p have a property by the same name, o's property is left alone.
+ * This function does not handle getters and setters or copy attributes.
+ */
+function merge(o, p) {
+    for(prop in p) {                           // For all props in p.
+        if (o.hasOwnProperty[prop]) continue;  // Except those already in o.
+        o[prop] = p[prop];                     // Add the property to o.
+    }
+    return o;
+}
+
+/*
+ * Remove properties from o if there is not a property with the same name in p.
+ * Return o.
+ */
+function restrict(o, p) {
+    for(prop in o) {                         // For all props in o
+        if (!(prop in p)) delete o[prop];    // Delete if not in p
+    }
+    return o;
+}
+
+/*
+ * For each property of p, delete the property with the same name from o.
+ * Return o.
+ */
+function subtract(o, p) {
+    for(prop in p) {                         // For all props in p
+        delete o[prop];                      // Delete from o (deleting a
+                                             // nonexistent prop is harmless)
+    }
+    return o;
+}
+
+/*
+ * Return a new object that holds the properties of both o and p.
+ * If o and p have properties by the same name, the values from o are used.
+ */
+function union(o,p) { return extend(extend({},o), p); }
+
+/*
+ * Return a new object that holds only the properties of o that also appear
+ * in p. This is something like the intersection of o and p, but the values of
+ * the properties in p are discarded
+ */
+function intersection(o,p) { return restrict(extend({}, o), p); }
+
+/*
+ * Return an array that holds the names of the enumerable own properties of o.
+ */
+function keys(o) {
+    if (typeof o !== "object") throw TypeError();  // Object argument required
+    var result = [];                 // The array we will return
+    for(var prop in o) {             // For all enumerable properties
+        if (o.hasOwnProperty(prop))  // If it is an own property
+            result.push(prop);       // add it to the array.
+    }
+    return result;                   // Return the array.
+}
+</code></pre>
+<pre><code>var a = [1,2,3,4,5];  
+var sum = a.reduce(function (x,y) {  
+    return x+y  
+}, 0);  
+var product = a.reduce(function (x,y) {  
+    return x*y  
+},1);  
+var max = a.reduce(function (x,y) {  
+    return (x&gt;y)?x:y;  
+});  
+  
+var objects = [{x:1,a:1},{y:2,a:2}];  
+var leftunion = objects.reduce(union);       //{ x: 1, a: 2, y: 2 }  
+var rightunion = objects.reduceRight(union); //{ y: 2, a: 1, x: 1 }
+</code></pre>
+<pre><code>a = [0,1,2,1,0];  
+console.log(a.indexOf(1));        //1  
+console.log(a.lastIndexOf(1));    //3  
+console.log(a.indexOf(3));        //-1
+</code></pre>
+<pre><code>//在数组中查找所有出现的x，并返回一个包含匹配索引的数组  
+function findall(a,x) {  
+    var results = [],  
+        len = a.length,  
+        pos = 0;  
+    while(pos &lt; len){  
+        pos = a.indexOf(x,pos);  
+        if(pos === -1) break;  
+        results.push(pos);  
+        pos = pos + 1;  
+    }  
+    return results;  
+}
+</code></pre>
+<ul>
+<li><strong>类数组对象</strong></li>
+</ul>
+<pre><code>console.log(Array.isArray([]));  
+console.log(Array.isArray({}));
+  
+//判定o是否是一个类数组对象  
+//字符串和函数有length属性，但是它们  
+//可以用type检测将其排除。在客户端JavaScript中，DOM文本节点  
+//也有length属性，需要用额外判断o.nodeType =3将其排除  
+function isArrayLike(o)  
+{  
+    if (o &amp;&amp;                         //o非null、undefined等  
+  typeof o === "object" &amp;&amp;     //o是对象  
+  isFinite(o.length) &amp;&amp;        //o.length是有限数值  
+  o.length &gt;= 0 &amp;&amp;             //o.length为非负值  
+  o.length === Math.floor(o.length) &amp;&amp;  //o.length是整数  
+  o.length &lt; 4294967296)       //o.length &lt; 2^32  
+  return true;                 //o是类数组对象  
+  else  
+ return false;                //否则它不是  
+}
+</code></pre>
+<blockquote>
+<p>console.log(typeof(a));<br>
+console.log(Object.prototype.toString.call(a));<br>
+既然类数组对象没有继承自Array·prototype，那就不能在它们上面直接调用数组方法。尽管如此，可以间接地使用Functn·call方法调用：</p>
+</blockquote>
+<pre><code>var a = {"0":"a","1":"b","2":"c",length:3};  
+console.log(Array.prototype.join.call(a, "+"));  
+console.log(Array.prototype.slice.call(a, 0));  
+console.log(Array.prototype.map.call(a, function (x) {  
+    return x.toUpperCase();  
+}));
+
+Array.join = Array.join || function (a,sep) {  
+        return Array.prototype.join.call(a,sep);  
+}  
+Array.slice = Array.slice || function (a, from, to) {  
+        return Array.prototype.slice.call(a,from,to);  
+}  
+Array.map = Array.map || function (a, f, thisArg) {  
+        return Array.prototype.map.call(a,f,thisArg)  
+}
+
+s = "JavaScript";  
+console.log(Array.prototype.join.call(s, " "));  
+console.log(Array.prototype.filter.call(s, function (x) {  
+    return x.match(/[^aeiou]/);  
+}).join(""));
+</code></pre>
+<h1 id="函数">函数</h1>
 
